@@ -18,6 +18,7 @@
 
 # --- Secrets and Environment ---
 appsettings.Development.json
+appsettings.json
 secrets.json
 *.env
 
