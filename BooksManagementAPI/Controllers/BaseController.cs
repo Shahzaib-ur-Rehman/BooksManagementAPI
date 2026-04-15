@@ -1,21 +1,19 @@
 ﻿using BooksManagementAPI.Models.DTOs;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BooksManagementAPI.Controllers
 {
     public class BaseController : ControllerBase
     {
-
-        public IActionResult ThrowBadRequestError(string errorMessage)
+        protected IActionResult ThrowBadRequestError(string errorMessage)
         {
             return StatusCode(StatusCodes.Status400BadRequest, new CustomBadRequestErrorActionResult
             {
-                Message= errorMessage
+                Message = errorMessage
             });
         }
 
-        public IActionResult ThrowInternalServerError(string errorMessage)
+        protected IActionResult ThrowInternalServerError(string errorMessage)
         {
             return StatusCode(StatusCodes.Status500InternalServerError, new CustomInternalServerErrorActionResult
             {
@@ -23,7 +21,7 @@ namespace BooksManagementAPI.Controllers
             });
         }
 
-        public IActionResult ThrowNullReferenceError(string errorMessage)
+        protected IActionResult ThrowNullReferenceError(string errorMessage)
         {
             return StatusCode(StatusCodes.Status404NotFound, new CustomNullReferenceErrorActionResult
             {
@@ -31,5 +29,4 @@ namespace BooksManagementAPI.Controllers
             });
         }
     }
-
 }

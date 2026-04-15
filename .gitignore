@@ -18,9 +18,11 @@
 
 # --- Secrets and Environment ---
 appsettings.Development.json
+appsettings.json
 secrets.json
 *.env
 
+BooksManagementAPI/appsettings.json
 # --- Testing ---
 TestResults/
 [Tt]est[Rr]esult*/

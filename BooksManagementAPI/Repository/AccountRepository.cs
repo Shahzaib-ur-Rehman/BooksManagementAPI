@@ -6,11 +6,12 @@ using System;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using System.Threading.Tasks;
 using JwtRegisteredClaimNames = Microsoft.IdentityModel.JsonWebTokens.JwtRegisteredClaimNames;
 
 namespace BooksManagementAPI.Repository
 {
-    public class AccountRepository
+    public class AccountRepository:IAccountRepository
     {
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly SignInManager<ApplicationUser> _signInManager;
@@ -54,6 +55,18 @@ namespace BooksManagementAPI.Repository
             var token = await GenerateJsonWebToken(user);
 
             return token;
+        }
+
+        public async Task<string> ForgotPassowrd(ForgotModel model)
+        {
+            var user = await _userManager.FindByEmailAsync(model.Email);
+
+            if (user==null)
+            {
+                return null;
+            }
+
+            return "";
         }
 
         private async Task<string> GenerateJsonWebToken(ApplicationUser user)
