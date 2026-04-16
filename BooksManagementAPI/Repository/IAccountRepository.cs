@@ -7,5 +7,9 @@ namespace BooksManagementAPI.Repository
     {
         Task<IdentityResult> Signup(SignupModel model);
         Task<string> Login(LoginModel model);
+
+        Task<string> ForgotPassowrd(ForgotModel model);
+
+        Task<string> ResetPassword(ResetPasswordDTO model);
     }
 }

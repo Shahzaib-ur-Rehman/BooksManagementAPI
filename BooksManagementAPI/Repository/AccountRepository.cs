@@ -1,5 +1,6 @@
 ﻿using BooksManagementAPI.Models.DTOs;
 using BooksManagementAPI.Models.Entities;
+using BooksManagementAPI.ThirdPartyServices;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
 using System;
@@ -16,12 +17,14 @@ namespace BooksManagementAPI.Repository
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly IConfiguration _configuration;
+        private readonly IEMailSender _mailSender;
 
-        public AccountRepository(UserManager<ApplicationUser> userManager,SignInManager<ApplicationUser> signInManager, IConfiguration configuration)
+        public AccountRepository(UserManager<ApplicationUser> userManager,SignInManager<ApplicationUser> signInManager, IConfiguration configuration, IEMailSender mailSender)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _configuration = configuration;
+            _mailSender = mailSender;
         }
 
         public async Task<IdentityResult> Signup(SignupModel model)
@@ -66,9 +69,26 @@ namespace BooksManagementAPI.Repository
                 return null;
             }
 
-            return "";
+            var optCode = await _userManager.GeneratePasswordResetTokenAsync(user);
+
+            await _mailSender.SendMail("shaahzaibrehman@gmail.com","OTP Code",user.Email,optCode);
+            return "Check Your Email For Forgot Password OTP";
         }
 
+        public async Task<string> ResetPassword(ResetPasswordDTO model)
+        {
+            var user = await _userManager.FindByEmailAsync(model.Email);
+            if (user == null)
+            {
+                return null;
+            }
+            var result = await _userManager.ResetPasswordAsync(user, model.OtpCode, model.Password);
+            if (!result.Succeeded)
+            {
+                return "Otp Incorrect";
+            }
+            return "Password Reset Successfully";
+        }
         private async Task<string> GenerateJsonWebToken(ApplicationUser user)
         {
             var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Secret"]));

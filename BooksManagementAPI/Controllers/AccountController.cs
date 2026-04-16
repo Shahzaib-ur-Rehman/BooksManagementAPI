@@ -103,5 +103,78 @@ namespace BooksManagementAPI.Controllers
                 return ThrowInternalServerError(ex.Message);
             }
         }
+
+        [HttpPost]
+        [Route("forgotPassword")]
+        [ProducesResponseType(typeof(ResponseDTO<string>),StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(CustomBadRequestErrorActionResult),StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(CustomNullReferenceErrorActionResult),StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(CustomInternalServerErrorActionResult),StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> ForgotPassword(ForgotModel model)
+        {
+            try
+            {
+                var result = await _accountRepository.ForgotPassowrd(model);
+                var response = new ResponseDTO<string>
+                {
+                    Message="OTP Sent Successfully",
+                    Data=result
+                };
+                return Ok(response);
+            }
+            catch (BadHttpRequestException ex)
+            {
+                return ThrowBadRequestError(ex.Message);
+            }
+            catch (NullReferenceException ex)
+            {
+                return ThrowNullReferenceError(ex.Message);
+            }
+            catch (SqlException ex)
+            {
+                return ThrowInternalServerError(ex.Message);
+            }
+        }
+
+
+        [HttpPost]
+        [Route("resetPassword")]
+        [ProducesResponseType(typeof(ResponseDTO<string>),StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(CustomBadRequestErrorActionResult),StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(CustomNullReferenceErrorActionResult),StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(CustomInternalServerErrorActionResult),StatusCodes.Status500InternalServerError)]
+        public IActionResult ResetPassword(ResetPasswordDTO model)
+        {
+            try
+            {
+            var result =  _accountRepository.ResetPassword(model);
+                if (result==null)
+                {
+                    BadRequest();
+                }
+                var response = new ResponseDTO<string>
+                {
+                    Message="Password Reset Successfully",
+                    Data= null
+                };
+                return Ok(response);
+            }
+            catch (BadHttpRequestException ex)
+            {
+
+                return ThrowBadRequestError(ex.Message);
+            }
+            catch (NullReferenceException ex)
+            {
+                return ThrowNullReferenceError(ex.Message);
+            }
+            catch (SqlException ex)
+            {
+                return ThrowInternalServerError(ex.Message);
+            }
+           
+
+        }
+
     }
 }
